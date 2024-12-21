@@ -2,6 +2,10 @@
 
 A comprehensive solution for managing hostel operations, including room allocation, mess management, and complaint handling.
 
+## 🎥 Demo
+
+![Hostel Management GIF](https://ezgif.com/save/ezgif-1-6412beb690.gif)
+
 ## 🌟 Features
 
 - **Room and Hostel Management**: Efficient room allocation and hostel administration.
