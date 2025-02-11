@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Room{% endblock %}
+
+{% block content %}
+<style>
+/* Form Container Styles */
+.form-container {
+    max-width: 800px;
+    width: 100%;
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin: 2rem auto;
+}
+
+.form-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.form-title {
+    font-size: 1.875rem;
+    color: var(--text-color);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+    color: #6b7280;
+    font-size: 0.975rem;
+}
+
+/* Form Group Styles */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #1f2937;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    transition: all 0.15s ease;
+}
+
+.form-control:focus {
+    background-color: #fff;
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Select Styles */
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+/* Form Grid */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Button Styles */
+.form-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--secondary-color);
+}
+
+/* Alert Styles */
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.alert-warning {
+    background-color: #fff7ed;
+    border: 1px solid #fdba74;
+    color: #c2410c;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #dc2626;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}
+
+/* Input States */
+.form-control:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.form-control.is-invalid {
+    border-color: #dc2626;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23dc2626' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc2626' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem 1rem;
+    padding-right: 2.5rem;
+}
+
+.invalid-feedback {
+    display: block;
+    font-size: 0.875rem;
+    color: #dc2626;
+    margin-top: 0.25rem;
+}
+</style>
+<div class="form-container">
+    <div class="form-header">
+        <h2 class="form-title">Add New Room</h2>
+        <p class="form-subtitle">Create a new room assignment</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" id="addRoomForm">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="hostel_id">Select Hostel</label>
+                <select name="hostel_id" id="hostel_id" class="form-control" required>
+                    <option value="">-- Select Hostel --</option>
+                    {% for hostel in hostels %}
+                        <option value="{{ hostel.id }}">{{ hostel.Hostel_Name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="room_type">Room Type</label>
+                <select name="room_type" id="room_type" class="form-control" required>
+                    <option value="">-- Select Room Type --</option>
+                    <option value="Single Seater">Single Seater</option>
+                    <option value="Two Seater">Two Seater</option>
+                    <option value="Three Seater">Three Seater</option>
+                    <option value="Six Seater">Six Seater</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="room_no">Room Number</label>
+                <input type="text" name="room_no" id="room_no" class="form-control" 
+                       required placeholder="Enter room number">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="floor_no">Floor Number</label>
+                <input type="number" name="floor_no" id="floor_no" class="form-control" 
+                       required placeholder="Enter floor number" min="0">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="location">Location</label>
+            <input type="text" name="location" id="location" class="form-control" 
+                   required placeholder="Enter room location">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="students_alloted">Initial Students Allotted</label>
+            <input type="number" name="students_alloted" id="students_alloted" class="form-control" 
+                   required placeholder="Enter number of students" min="0">
+        </div>
+
+        <button type="submit" class="form-button btn-primary">
+            <i class="fas fa-plus-circle mr-2"></i>
+            Add Room
+        </button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('addRoomForm');
+    const roomTypeSelect = document.getElementById('room_type');
+    const studentsAlloted = document.getElementById('students_alloted');
+    
+    form.addEventListener('submit', function(e) {
+        const roomType = roomTypeSelect.value;
+        const students = parseInt(studentsAlloted.value);
+        let maxStudents;
+        
+        switch(roomType) {
+            case 'Single Seater': maxStudents = 1; break;
+            case 'Two Seater': maxStudents = 2; break;
+            case 'Three Seater': maxStudents = 3; break;
+            case 'Six Seater': maxStudents = 6; break;
+            default: maxStudents = 0;
+        }
+        
+        if (students > maxStudents) {
+            e.preventDefault();
+            alert(`A ${roomType} room cannot have more than ${maxStudents} students!`);
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <!-- Welcome Section -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Welcome, {{ user.username }}!</h1>
+                <div class="date-display">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="current-date"></span>
+                </div>
+            </div>
+            
+            <!-- Top Info Boxes -->
+            <div class="top-info-boxes">
+                <a href="{% url 'list_students' %}" class="info-link">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>{{ total_students|default:"0" }}</h3>
+                            <p>Total Students</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{% url 'list_rooms' %}" class="info-link">
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>{{ available_rooms|default:"0" }}</h3>
+                            <p>Available Rooms</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="{% url 'fee_management' %}" class="info-link">
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>{{ students_with_paid_payment|default:"0" }}</h3>
+                            <p>Total Payments</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-money-bill"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Dashboard Grid Layout -->
+            <div class="dashboard-grid">
+                <!-- Calendar Section -->
+                
+
+                <!-- Quick Actions Section -->
+                <div class="info-section">
+                    <div class="card">
+                        <div class="card-header bg-gradient-success">
+                            <h3 class="card-title">
+                                <i class="fas fa-bell mr-2"></i>
+                                Quick Actions
+                            </h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="action-buttons">
+                                <a href="{% url 'list_complaints' %}" class="sidebar-link">
+                                    <i class="fas fa-exclamation-circle"></i>Complaints
+                                    {% if unread_complaints > 0 %}
+                                        <span class="badge">{{ unread_complaints }}</span>
+                                    {% endif %}
+                                </a>
+                                <a href="{% url 'list_of_notices' %}" class="action-button">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span>Notices ({{ active_notices|default:"0" }})</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Styling -->
+<style>
+    /* General Layout */
+    .content-wrapper {
+        background-color: #f3f4f6;
+        padding: 1.5rem;
+        min-height: 100vh;
+    }
+
+    .content-header {
+        margin-bottom: 2rem;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .date-display {
+        display: flex;
+        align-items: center;
+        font-size: 1.1rem;
+        color: #6b7280;
+    }
+
+    /* Info Boxes */
+    .top-info-boxes {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .small-box {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .small-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .bg-info {
+        background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, #34d399, #10b981);
+    }
+
+    .bg-warning {
+        background: linear-gradient(135deg, #fbbf24, #d97706);
+    }
+
+    .small-box .inner {
+        position: relative;
+        z-index: 2;
+        color: white;
+    }
+
+    .small-box .inner h3 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .small-box .inner p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .small-box .icon {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 2.5rem;
+        opacity: 0.3;
+        z-index: 1;
+        color: white;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .calendar-section .card {
+        margin-bottom: 0;
+    }
+
+    #calendar {
+        min-height: 600px;
+        background: white;
+        padding: 1rem;
+    }
+
+    .fc-header-toolbar {
+        padding: 1rem;
+    }
+
+    .fc-button {
+        background-color: #3b82f6 !important;
+        border-color: #3b82f6 !important;
+    }
+
+    .fc-button:hover {
+        background-color: #2563eb !important;
+        border-color: #2563eb !important;
+    }
+
+    .fc-day-today {
+        background-color: #e5e7eb !important;
+    }
+
+    .fc-event {
+        border-radius: 4px;
+        padding: 2px 4px;
+    }
+
+    .action-buttons {
+        display: grid;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .action-button {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        background-color: #f3f4f6;
+        border-radius: 0.5rem;
+        color: #1f2937;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .action-button:hover {
+        background-color: #e5e7eb;
+        transform: translateX(5px);
+    }
+
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- FullCalendar Initialization -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize current date display
+    const dateDisplay = document.getElementById('current-date');
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    dateDisplay.textContent = new Date().toLocaleDateString(undefined, options);
+
+    // Initialize FullCalendar
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        height: 'auto',
+        aspectRatio: 1.8,
+        editable: true,
+        selectable: true,
+        selectMirror: true,
+        dayMaxEvents: true,
+        events: [
+            {
+                title: 'Fee Due Date',
+                start: '2024-02-15',
+                backgroundColor: '#ef4444',
+                borderColor: '#ef4444'
+            },
+            {
+                title: 'Room Inspection',
+                start: '2024-02-20',
+                backgroundColor: '#3b82f6',
+                borderColor: '#3b82f6'
+            }
+        ],
+        select: function(info) {
+            // Handle date selection
+            const title = prompt('Enter event title:');
+            if (title) {
+                calendar.addEvent({
+                    title: title,
+                    start: info.start,
+                    end: info.end,
+                    allDay: info.allDay
+                });
+            }
+            calendar.unselect();
+        }
+    });
+    calendar.render();
+
+    // Add Event Button Handler
+    document.getElementById('add-event').addEventListener('click', function() {
+        const title = prompt('Enter event title:');
+        if (title) {
+            const date = new Date();
+            calendar.addEvent({
+                title: title,
+                start: date,
+                allDay: true
+            });
+        }
+    });
+
+    // Reset complaint count in session when clicked
+    document.getElementById('complaint-link').addEventListener('click', function() {
+        sessionStorage.setItem('complaintCount', '0');
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .container {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        background-color: #f7f7f7;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #2563eb;
+        color: white;
+        padding: 1rem;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .profile-header img {
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border: 2px solid white;
+    }
+
+    .profile-header .name {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    .section {
+        display: flex;
+        justify-content: space-between;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .info-section {
+        width: 48%;
+    }
+
+    .info-section h2 {
+        border-bottom: 2px solid #ecf0f1;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #34495e;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #ecf0f1;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        color: #95a5a6;
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: #2c3e50;
+        text-transform: capitalize;
+        flex: 2;
+        text-align: right;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            margin: 1rem;
+            padding: 1rem;
+        }
+
+        .section {
+            flex-direction: column;
+        }
+
+        .info-section {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            flex-direction: column;
+        }
+
+        .info-value {
+            text-align: left;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="profile-header">
+        <div class="name">{{ student.F_Name }} {{ student.L_Name }}</div>
+        <img src="{{ student.profile_picture.url }}" alt="Profile Picture">
+    </div>
+
+    <div class="section">
+        <div class="info-section">
+            <h2>Personal Information</h2>
+            <div class="info-item">
+                <span class="info-label">Registration Number</span>
+                <span class="info-value">{{ student.Registration_Number }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Father's Name</span>
+                <span class="info-value">{{ student.FatherName }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ student.user.email }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Contact</span>
+                <span class="info-value">{{ student.Contact_Info }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Address</span>
+                <span class="info-value">{{ student.Address }}</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Hostel Information</h2>
+            <div class="info-item">
+                <span class="info-label">Hostel Name</span>
+                <span class="info-value">{{ student.Hostel_ID.Hostel_Name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Room Number</span>
+                <span class="info-value">{{ student.Room_ID.Room_No }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Room Type</span>
+                <span class="info-value">{{ student.Room_ID.Room_Type }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Floor Number</span>
+                <span class="info-value">{{ student.Room_ID.Floor_No }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Fee Status</h2>
+        <div class="info-item">
+            <span class="info-label">Total Fee</span>
+            <span class="info-value">₹{{ student.total_fee_amount }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Paid Amount</span>
+            <span class="info-value">₹{{ student.total_paid_amount }}</span>
+        </div>
+    </div>
+    <div class="section">
+        <h2>Notices</h2>
+        {% for notice in notices %}
+            <div class="notice-item">
+                <h3>{{ notice.Title }}</h3>
+                <p>{{ notice.Content|truncatewords:20 }}</p>  <!-- Display a short preview of the notice -->
+            </div>
+        {% empty %}
+            <p>No active notices at the moment.</p>
+        {% endfor %}
+    </div>
+    
+    
+</div>
+{% endblock %}

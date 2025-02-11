@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+
+{% block title %}Fee Management{% endblock %}
+
+{% block content %}
+<!-- Optionally include Font Awesome if needed for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+      integrity="sha512-kNd6F9Z4V+eBkF6ZdH+3lPE5H7C+1v9gUlStgskDw+2Vy0q2P09P8t9WJ5V3tJdPHRNTd71Cx+K0tCwC7nZH7g==" 
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-light: #3b82f6;
+        --success: #059669;
+        --warning: #d97706;
+        --danger: #dc2626;
+        --gray-50: #f8fafc;
+        --gray-100: #f4f6f9;
+        --gray-200: #e2e8f0;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-800: #1e293b;
+    }
+
+    body {
+        background-color: var(--gray-100);
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: var(--gray-800);
+        line-height: 1.5;
+    }
+
+    .container {
+        max-width: 1280px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-title {
+        color: white;
+        font-size: 1.875rem;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.025em;
+    }
+
+    .add-payment-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        text-decoration: none;
+        backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .add-payment-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Search Bar Styling */
+    .search-container {
+        margin: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--gray-200);
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        width: 250px;
+    }
+
+    .search-btn {
+        padding: 0.5rem 1rem;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        margin-left: 0.5rem;
+        transition: background 0.2s ease;
+    }
+
+    .search-btn:hover {
+        background: var(--primary-light);
+    }
+
+    .table-container {
+        margin: 1.5rem;
+        border-radius: 0.75rem;
+        overflow: auto;
+        position: relative;
+    }
+
+    .student-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 1000px;
+    }
+
+    .student-table th {
+        background: var(--gray-50);
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-600);
+        text-align: left;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 2px solid var(--gray-200);
+    }
+
+    .student-table td {
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+        border-bottom: 1px solid var(--gray-200);
+        transition: all 0.2s ease;
+    }
+
+    .student-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .student-email {
+        color: #5c7291;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        line-height: 1;
+    }
+
+    .status-badge::before {
+        content: '';
+        width: 0.375rem;
+        height: 0.375rem;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .status-paid {
+        background: #ecfdf5;
+        color: var(--success);
+    }
+
+    .status-paid::before {
+        background: var(--success);
+    }
+
+    .status-unpaid {
+        background: #fef2f2;
+        color: var(--danger);
+    }
+
+    .status-unpaid::before {
+        background: var(--danger);
+    }
+
+    .status-pending {
+        background: #fffbeb;
+        color: var(--warning);
+    }
+
+    .status-pending::before {
+        background: var(--warning);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .action-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        color: var(--gray-500);
+        background: transparent;
+        transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+        background: #eff6ff;
+        color: var(--primary);
+        transform: translateY(-1px);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--gray-500);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--gray-500);
+        opacity: 0.5;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+            margin: 1rem auto;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+        }
+
+        .page-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .table-container {
+            margin: 1rem;
+        }
+
+        .student-table td,
+        .student-table th {
+            padding: 0.75rem 1rem;
+        }
+    }
+
+    @media (hover: hover) {
+        .student-table tbody tr:hover td {
+            background: var(--gray-50);
+        }
+    }
+
+    .status-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+
+    .payment-indicator {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        margin-top: 0.25rem;
+        display: inline-block;
+    }
+
+    .indicator-paid {
+        background-color: var(--success);
+    }
+
+    .indicator-unpaid {
+        background-color: var(--danger);
+    }
+
+    .indicator-pending {
+        background-color: var(--warning);
+    }
+
+    .room-type {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: #f1f5f9;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        color: #475569;
+    }
+</style>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="page-header">
+                <h2 class="page-title">Student Fee Management</h2>
+                <a href="{% url 'add_payment' %}" class="add-payment-btn">
+                    <i class="fas fa-plus"></i>
+                    Add Payment
+                </a>
+            </div>
+        </div>
+      
+            <!-- Search Bar -->
+            <div class="search-container">
+                <form method="GET" action="{% url 'fee_management' %}">
+                    <input type="text" name="search" class="search-input" placeholder="Search by name, email, or department" value="{{ search_query }}">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+            </div>
+            <div class="table-container">
+                <table class="student-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Department</th>
+                            <th>Email</th>
+                            <th>Room Number</th>
+                            <th>Hostel</th>
+                            <th>Fee Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.F_Name }} {{ student.L_Name }}</td>
+                            <td>{{ student.Department }}</td>
+                            <td class="student-email">{{ student.user.email }}</td>
+                            <td>
+                                {% if student.Room_ID %}
+                                    {{ student.Room_ID.Room_No }} 
+                                    <span class="room-type">({{ student.Room_ID.Room_Type }})</span>
+                                {% else %}
+                                    Not Assigned
+                                {% endif %}
+                            </td>
+                            <td>{{ student.Hostel_ID.Hostel_Name }}</td>
+                            <td>
+                                <div class="status-wrapper">
+                                    <span class="status-badge {% if student.fee_status == 'Paid' %}status-paid{% elif student.fee_status == 'Unpaid' %}status-unpaid{% else %}status-pending{% endif %}">
+                                        {{ student.fee_status }}
+                                    </span>
+                                    {% for payment in student.payments.all %}
+                                        <span class="status-badge status-paid">
+                                            Paid {{ forloop.counter }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                                <p>No students found. Please add students to manage their fees.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        <!-- </div> -->
+    </div>
+</div>
+{% endblock %}
+
+

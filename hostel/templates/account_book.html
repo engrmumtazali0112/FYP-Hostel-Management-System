@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block title %}Account Book{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .header {
+        background-color: #337ab7;
+        color: white;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+    }
+
+    .header h2 {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    /* Fee Summary Cards */
+    .fee-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .fee-card {
+        background: white;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .fee-card-title {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .fee-card-value {
+        font-size: 24px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .rupee-symbol {
+        font-family: Arial, sans-serif;
+    }
+
+    /* Table Styles */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        margin-top: 20px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 500;
+    }
+
+    .table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+
+    .status-paid {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-unpaid {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .btn-download {
+        background-color: #337ab7;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-block;
+    }
+
+    .btn-download:hover {
+        background-color: #286090;
+    }
+</style>
+
+<div class="container">
+    <div class="header">
+        <h2>Account Book</h2>
+    </div>
+
+    <div class="fee-summary">
+        <div class="fee-card">
+            <div class="fee-card-title">Total Fee Amount</div>
+            <div class="fee-card-value">
+                <span class="rupee-symbol">₹</span>{{ total_fee }}.00
+            </div>
+        </div>
+        <div class="fee-card">
+            <div class="fee-card-title">Per Installment</div>
+            <div class="fee-card-value">
+                <span class="rupee-symbol">₹</span>{{ per_installment }}.00
+            </div>
+        </div>
+        <div class="fee-card">
+            <div class="fee-card-title">Paid Installments</div>
+            <div class="fee-card-value">{{ paid_installments }}</div>
+        </div>
+        <div class="fee-card">
+            <div class="fee-card-title">Remaining Amount</div>
+            <div class="fee-card-value">
+                <span class="rupee-symbol">₹</span>{{ remaining_fee }}.00
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Challan No</th>
+                    <th>Semester</th>
+                    <th>Total Amount</th>
+                    <th>Challan Status</th>
+                    <th>Voucher No</th>
+                    <th>Payment Date</th>
+                    <th>Payment Mode</th>
+                
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.challan_no }}</td>
+                    <td>{{ payment.semester }}</td>
+                    <td>₹{{ payment.amount }}.00</td>
+                    <td>
+                        <span class="status-badge {% if payment.status == 'PAID' %}status-paid{% else %}status-unpaid{% endif %}">
+                            {{ payment.status }}
+                        </span>
+                    </td>
+                    <td>{{ payment.voucher_no }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                    <td>{{ payment.payment_mode }}</td> <!-- Display payment mode -->
+                    <td>
+                        <!-- {% if payment.status == 'PAID' %}
+                        <a href="#" class="btn-download">Download</a>
+                        {% endif %} -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

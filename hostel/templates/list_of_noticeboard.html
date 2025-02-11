@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}Notice Board Management{% endblock %}
+
+{% block extra_styles %}
+{% load static %}
+<!-- Link to the external CSS file for styling -->
+<link rel="stylesheet" href="{% static 'css/noticestyles.css' %}">
+{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 2rem;
+        background-color: #f5f7fa;
+        color: #2d3748;
+    }
+
+    .container-fluid {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    h2 {
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        background-color: #4299e1;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+        background-color: #3182ce;
+    }
+
+    /* Table Container */
+    .table-container {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+    }
+
+    th {
+        background-color: #edf2f7;
+        padding: 0.75rem;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #e2e8f0;
+        color: #2d3748;
+    }
+
+    td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    tr:hover {
+        background-color: #f7fafc;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #64748b;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            min-width: 1000px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <h2>List of Notices</h2>
+        <a href="{% url 'add_notice' %}" class="btn btn-primary">Add Notice</a>
+    </div>
+
+    <!-- Wrap the table inside a scrollable container -->
+    <div class="table-container mt-4">
+        <table class="table table-striped table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Expiry Date</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for notice in notices %}
+                    <tr>
+                        <td>{{ notice.Title }}</td>
+                        <td>{{ notice.Content }}</td>
+                        <td>{{ notice.Expiry_Date }}</td>
+                        <td>{{ notice.Created_At }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-state">No notices available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

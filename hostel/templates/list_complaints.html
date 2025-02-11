@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}Complaint Management{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Complaint Management</h1>
+    <table class="complaints-table">
+        <thead>
+            <tr>
+                <th>Complaint ID</th>
+                <th>Actions</th>
+                <th>Student Name</th>
+                <th>Complaint Type</th>
+                <th>Complaint Description</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+            <tr>
+                <td>
+                    <span class="id-badge">#{{ complaint.Complaint_ID }}</span>
+                </td>
+                <td>
+                    <a href="{% url 'view_complaint' complaint.Complaint_ID %}" class="action-button" title="View Complaint">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-view">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span class="action-text">View</span>
+                    </a>
+                </td>
+                <td>{{ complaint.Student_ID.F_Name }} {{ complaint.Student_ID.L_Name }}</td>
+                <td>
+                    <span class="type-badge">{{ complaint.Complaint_Type }}</span>
+                </td>
+                <td>
+                    <div class="description-cell">
+                        {{ complaint.Complaint_Description|slice:":50" }}
+                        {% if complaint.Complaint_Description|length > 50 %}...{% endif %}
+                    </div>
+                </td>
+                <td>{{ complaint.Created_At|date:"M d, Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No complaints found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+    }
+
+    .complaints-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .complaints-table th {
+        background: #3498db;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .complaints-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e1e1e1;
+        vertical-align: middle;
+    }
+
+    .complaints-table tr:hover {
+        background-color: #f5f6fa;
+    }
+
+    .complaints-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .id-badge {
+        background-color: #edf2f7;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .type-badge {
+        background-color: #ebf8ff;
+        color: #2b6cb0;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .action-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        background-color: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        color: #4a5568;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .action-button:hover {
+        background-color: #edf2f7;
+        color: #2d3748;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .icon-view {
+        margin-right: 6px;
+    }
+
+    .action-text {
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+
+    .description-cell {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    body {
+        background-color: #f0f2f5;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .action-text {
+            display: none;
+        }
+        
+        .action-button {
+            padding: 8px;
+        }
+        
+        .description-cell {
+            max-width: 150px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    h1 {
+        color: #1e293b;
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .add-hostel {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+    }
+
+    .add-hostel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 12px -1px rgba(37, 99, 235, 0.2);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    thead {
+        background: #f8fafc;
+    }
+
+    th {
+        text-align: left;
+        padding: 1.25rem 1rem;
+        font-weight: 600;
+        color: #475569;
+        border-bottom: 2px solid #e2e8f0;
+        font-size: 0.875rem;
+    }
+
+    td {
+        padding: 1.25rem 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        color: #1e293b;
+    }
+
+    tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .edit-btn, .delete-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .edit-btn {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .edit-btn:hover {
+        background: #dbeafe;
+    }
+
+    .delete-btn {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .delete-btn:hover {
+        background: #fee2e2;
+    }
+
+    @media (max-width: 1024px) {
+        table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="header-section">
+        <h1>List of Hostels</h1>
+        <a href="{% url 'add_hostel' %}" class="add-hostel">+ Add Hostel</a>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Rooms</th>
+                <th>Single Seater</th>
+                <th>Two Seater</th>
+                <th>Three Seater</th>
+                <th>Six Seater</th>
+                <th>Students</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hostel in hostels %}
+            <tr>
+                <td>{{ hostel.Hostel_ID }}</td>
+                <td>{{ hostel.Hostel_Name }}</td>
+                <td>{{ hostel.No_Of_Rooms }}</td>
+                <td>{{ hostel.Single_Seater_Rooms }}</td>
+                <td>{{ hostel.Two_Seater_Rooms }}</td>
+                <td>{{ hostel.Three_Seater_Rooms }}</td>
+                <td>{{ hostel.Six_Seater_Rooms }}</td>
+                <td>{{ hostel.No_Of_Students }}</td>
+                <td class="actions">
+                    <a href="{% url 'edit_hostel' hostel.Hostel_ID %}" class="edit-btn">Edit</a>
+                    <a href="{% url 'delete_hostel' hostel.Hostel_ID %}" class="delete-btn" 
+                       onclick="return confirm('Are you sure you want to delete this hostel?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

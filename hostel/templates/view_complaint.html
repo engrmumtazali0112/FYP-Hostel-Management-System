@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}Complaint Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="complaint-details">
+        <!-- In your complaint details template -->
+        <div class="back-link">
+            <a href="{% url 'list_complaints' %}" class="return-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Complaints
+            </a>
+        </div>
+
+
+        <div class="complaint-header">
+            <div class="header-content">
+                <div class="complaint-id">
+                    <span class="id-badge">#{{ complaint.Complaint_ID }}</span>
+                </div>
+                <h1>{{ complaint.Student_ID.F_Name }} {{ complaint.Student_ID.L_Name }}</h1>
+                <div class="complaint-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Complaint Type</span>
+                        <span class="type-badge">{{ complaint.Complaint_Type }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Submitted On</span>
+                        <span class="date-value">{{ complaint.Created_At|date:"M d, Y H:i" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="complaint-body">
+            <div class="section">
+                <h2>Complaint Description</h2>
+                <div class="description-content">
+                    {{ complaint.Complaint_Description }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 20px;
+    }
+
+    .complaint-details {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .back-link {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .return-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #4a5568;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    .return-button:hover {
+        color: #2d3748;
+    }
+
+    .complaint-header {
+        background: #f8fafc;
+        padding: 2rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .header-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .complaint-id {
+        margin-bottom: 1rem;
+    }
+
+    .id-badge {
+        background-color: #edf2f7;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 1.1rem;
+    }
+
+    .complaint-header h1 {
+        margin: 0 0 1.5rem 0;
+        color: #1a202c;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .complaint-meta {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .meta-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .type-badge {
+        background-color: #ebf8ff;
+        color: #2b6cb0;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+    .date-value {
+        color: #1a202c;
+        font-weight: 500;
+    }
+
+    .complaint-body {
+        padding: 2rem;
+    }
+
+    .section {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .section h2 {
+        color: #1a202c;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 1rem 0;
+    }
+
+    .description-content {
+        color: #4a5568;
+        line-height: 1.6;
+        font-size: 1.1rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .container {
+            margin: 1rem auto;
+            padding: 0 1rem;
+        }
+
+        .complaint-header {
+            padding: 1.5rem;
+        }
+
+        .complaint-meta {
+            gap: 1rem;
+        }
+
+        .complaint-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+{% endblock %}

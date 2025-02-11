@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Student{% endblock %}
+
+{% block content %}
+<style>
+    /* Form Container Styles */
+    .form-container {
+        max-width: 800px;
+        width: 100%;
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 2rem auto;
+    }
+
+    .form-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .form-title {
+        font-size: 1.875rem;
+        color: #333;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-subtitle {
+        color: #6b7280;
+        font-size: 0.975rem;
+    }
+
+    /* Form Group Styles */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: #1f2937;
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        transition: all 0.15s ease;
+    }
+
+    .form-control:focus {
+        background-color: #fff;
+        border-color: #3b82f6;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* Select Styles */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    /* Form Grid */
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Button Styles */
+    .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+
+    .btn-primary:hover {
+        background-color: #2563eb;
+        transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .btn-primary:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-primary:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
+    /* Alert Styles */
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-warning {
+        background-color: #fff7ed;
+        border: 1px solid #fdba74;
+        color: #c2410c;
+    }
+
+    .alert-danger {
+        background-color: #fef2f2;
+        border: 1px solid #fca5a5;
+        color: #dc2626;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 640px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-container {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+    }
+
+    /* Input States */
+    .form-control:disabled {
+        background-color: #f3f4f6;
+        cursor: not-allowed;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc2626;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23dc2626' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc2626' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem 1rem;
+        padding-right: 2.5rem;
+    }
+
+    .invalid-feedback {
+        display: block;
+        font-size: 0.875rem;
+        color: #dc2626;
+        margin-top: 0.25rem;
+    }
+
+</style>
+
+<div class="container-fluid d-flex justify-content-center">
+    <div class="form-container">
+        <h2 class="form-title">Add Student</h2>
+
+        {% if messages %}
+        <div class="alert alert-warning">
+            {% for message in messages %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Student Info Section -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control" name="first_name" id="first_name" placeholder="Enter First Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Enter Last Name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email Address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
+            </div>
+
+            <!-- Registration Number -->
+            <div class="form-group">
+                <label for="registration_number">Registration Number</label>
+                <input type="text" class="form-control" name="registration_number" id="registration_number" placeholder="Enter Registration Number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contact_info">Contact Info</label>
+                <input type="text" class="form-control" name="contact_info" id="contact_info" placeholder="Enter Contact Info" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" name="address" id="address" placeholder="Enter Address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <input type="text" class="form-control" name="department" id="department" placeholder="Enter Department" required>
+            </div>
+
+            <div class="form-group">
+                <label for="father_name">Father's Name</label>
+                <input type="text" class="form-control" name="father_name" id="father_name" placeholder="Enter Father's Name" required>
+            </div>
+
+            <!-- Room and Hostel Assignment -->
+            <div class="form-group">
+                <label for="hostel_id">Hostel</label>
+                <select class="form-control" name="hostel_id" id="hostel_id" required>
+                    {% for hostel in hostels %}
+                        <option value="{{ hostel.Hostel_ID }}">
+                            {{ hostel.Hostel_Name }} ({{ hostel.No_Of_Rooms }} rooms, {{ hostel.No_Of_Students }} students)
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="room_id">Room</label>
+                <select class="form-control" name="room_id" id="room_id" required>
+                    {% for room in rooms %}
+                        <option value="{{ room.Room_ID }}">
+                            {{ room.Room_No }} - {{ room.Room_Type }} ({{ room.remaining_capacity }} rooms left)
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="profile_picture">Profile Picture</label>
+                <input type="file" class="form-control" name="profile_picture" id="profile_picture" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Student</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

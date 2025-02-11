@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+
+{% block title %}Room Management{% endblock %}
+
+{% block content %}
+{% load static %}
+<style>
+    .container-fluid {
+        padding: 2rem;
+    }
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    .search-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .search-input {
+        width: 300px;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+    .search-btn {
+        background-color: #2563eb;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .search-btn:hover {
+        background-color: #1d4ed8;
+    }
+    .add-room-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #2563eb;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .add-room-btn:hover {
+        background: #1d4ed8;
+    }
+    .table-container {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+        margin-top: 1rem;
+    }
+    .room-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .room-table thead {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+    }
+    .room-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    .room-table tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 0.875rem;
+        color: #1e293b;
+    }
+    .room-table tbody tr:hover {
+        background: #f8fafc;
+    }
+    /* Add a highlight style for matching rooms */
+    tr.highlight {
+        background-color: #f0f8ff;  /* Light blue highlight; adjust as needed */
+    }
+    .room-id {
+        font-weight: 500;
+        color: #2563eb;
+    }
+    .room-no {
+        font-weight: 500;
+    }
+    .room-type {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: #f1f5f9;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        color: #475569;
+    }
+    .capacity-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    .capacity-full {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    .capacity-available {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    .location-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: #e0e7ff;
+        color: #4f46e5;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+    }
+    .student-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .student-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0;
+        font-size: 0.875rem;
+    }
+    .student-name {
+        color: #4b5563;
+    }
+    .student-id {
+        color: #6b7280;
+        font-size: 0.75rem;
+    }
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.375rem;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .action-btn:hover {
+        background: #f1f5f9;
+    }
+    .edit-btn:hover {
+        color: #2563eb;
+    }
+    .delete-btn:hover {
+        color: #dc2626;
+    }
+    @media (max-width: 1024px) {
+        .table-container {
+            overflow-x: auto;
+        }
+        .room-table {
+            min-width: 1000px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="header-section">
+        <h1 class="page-title">List of Rooms</h1>
+        <a href="{% url 'add_room' %}" class="add-room-btn">
+            <i class="fas fa-plus"></i>
+            Add Room
+        </a>
+    </div>
+
+    <form method="GET" action="{% url 'list_rooms' %}" class="search-container">
+        <input type="text" name="search" class="search-input" placeholder="Search by Room No, Type, or Location" value="{{ search_query }}">
+        <button type="submit" class="search-btn">Search</button>
+    </form>
+
+    <div class="table-container">
+        <table class="room-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Room No</th>
+                    <th>Type</th>
+                    <th>Capacity</th>
+                    <th>Remaining Capacity</th>
+                    <th>Location</th>
+                    <th>Allocated Students</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in rooms %}
+                    {% if search_query %}
+                        {% if search_query in room.Room_No or search_query in room.Room_Type or search_query in room.Location %}
+                            <tr class="highlight">
+                        {% else %}
+                            <tr>
+                        {% endif %}
+                    {% else %}
+                        <tr>
+                    {% endif %}
+                        <td class="room-id">{{ room.Room_ID }}</td>
+                        <td class="room-no">{{ room.Room_No }}</td>
+                        <td>
+                            <span class="room-type">{{ room.Room_Type }}</span>
+                        </td>
+                        <td>{{ room.Capacity }}</td>
+                        <td>
+                            <span class="capacity-badge {% if room.remaining_capacity == 0 %}capacity-full{% else %}capacity-available{% endif %}">
+                                {{ room.remaining_capacity }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="location-badge">{{ room.Location }}</span>
+                        </td>
+                        <td>
+                            <ul class="student-list">
+                                {% for student in room.allocated_students %}
+                                    <div class="student-info">
+                                        {{ student.F_Name }} {{ student.L_Name }} ({{ student.Department }})
+                                    </div>
+                                {% empty %}
+                                    No students allocated
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{% url 'edit_room' room.Room_ID %}" class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{% url 'delete_room' room.Room_ID %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn delete-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No rooms found.</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hostel Management System{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --sidebar-width: 280px;
+            --header-height: 64px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--background-color);
+            color: var(--text-color);
+        }
+        .navbar {
+            height: var(--header-height);
+            background: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            background: white;
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .sidebar-link:hover {
+            background: var(--background-color);
+            color: var(--primary-color);
+        }
+        .sidebar-link i {
+            width: 1.5rem;
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        .sidebar-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            padding: 2rem;
+            min-height: calc(100vh - var(--header-height));
+        }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: #ef4444;
+            color: white;
+            margin-left: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="navbar-brand" href="{% if user.is_authenticated and user.student %}{% url 'student_dashboard' %}{% elif user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
+            <i class="fas fa-building"></i>
+            HMS
+        </a>
+    </nav>
+    
+
+    <div class="sidebar">
+        {% if user.is_authenticated %}
+            {% if user.student %}
+                <!-- Student Sidebar Links -->
+                <a href="{% url 'student_dashboard' %}" class="sidebar-link">
+                    <i class="fas fa-user-circle"></i>My Profile
+                </a>
+                <a href="{% url 'submit_complaint' %}" class="sidebar-link">
+                    <i class="fas fa-comment-dots"></i>Add Complaint
+                </a>
+                     
+                <!-- New Account Book Link -->
+                <a href="{% url 'account_book' %}" class="sidebar-link">
+                    <i class="fas fa-book"></i>Account Book
+                </a>
+                <a href="{% url 'list_of_notices' %}" class="sidebar-link">
+                    <i class="fas fa-book"></i> Notice Board
+                </a>
+                
+
+                <a href="{% url 'logout' %}" class="sidebar-link">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            {% else %}
+                <!-- Admin or Other Users Sidebar Links -->
+                <a href="{% url 'dashboard' %}" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>Dashboard
+                </a>
+                <a href="{% url 'list_students' %}" class="sidebar-link">
+                    <i class="fas fa-users"></i>Students
+                </a>
+                <a href="{% url 'list_hostels' %}" class="sidebar-link">
+                    <i class="fas fa-building"></i>Hostels
+                </a>
+                <a href="{% url 'list_rooms' %}" class="sidebar-link">
+                    <i class="fas fa-bed"></i>Rooms
+                </a>
+                <a href="{% url 'list_complaints' %}" class="sidebar-link">
+                    <i class="fas fa-exclamation-circle"></i> Complaints
+                    {% if unread_complaints > 0 %}
+                        <span class="badge">{{ unread_complaints }}</span>
+                    {% endif %}
+                </a>
+            
+                <a href="{% url 'list_of_notices' %}" class="sidebar-link">
+                    <i class="fas fa-clipboard-list"></i>Notices
+                </a>
+                <a href="{% url 'fee_management' %}" class="sidebar-link">
+                    <i class="fas fa-credit-card"></i>Student Payment
+                </a>
+                <a href="{% url 'logout' %}" class="sidebar-link">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}" class="sidebar-link">
+                <i class="fas fa-sign-in-alt"></i>Login
+            </a>
+        {% endif %}
+    </div>
+
+    <main class="content">
+        {% block content %}
+        <!-- Your page-specific content goes here -->
+        {% endblock %}
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Add active class to current sidebar link
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
