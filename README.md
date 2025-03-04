@@ -4,6 +4,10 @@ A comprehensive solution for managing hostel operations, including room allocati
 
 ## 🎥 Demo
 
+- [Demo on Kaggle](https://www.kaggle.com/code/mumtazali12/emailsspamnonspam-ipynb/edit)
+- [GitHub Repository](https://github.com/engrmumtazali0112/FYP-Hostel-Management-System)
+- [Demo on Google Colab](https://colab.research.google.com/drive/19ycUy5qIZKCO8tKy37f4zkUiHzgKs05I?usp=sharing)
+
 <details>
 <summary>Click to view Demo</summary>
 <img src="https://github.com/user-attachments/assets/36470fa8-a4af-4a40-8f9c-e5a9724e1b75" width="400" alt="Screenshot 1" />
